@@ -1,0 +1,71 @@
+@font-face {
+  font-family: "Poppins";
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url("fonts/Poppins-SemiBold.ttf") format("ttf");
+}
+
+@font-face {
+  font-family: "Roboto";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("fonts/roboto-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Roboto";
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url("fonts/roboto-500.woff2") format("woff2");
+}
+
+:root {
+  /* Fonts */
+  --font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --poppins: "Poppins", "Roboto", Helvetica, Arial, sans-serif;
+  --roboto: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-base: .9rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.2rem;
+
+  /* Colors — base */
+  --color-text: hsl(0 0 20);
+  --color-text-secondary: hsl(0 0 40);
+  --color-text-muted: hsl(0 0 53);
+  --color-text-faint: hsl(0 0 67);
+  --color-white: hsl(0 0 100);
+  --color-bg: hsl(0 0 98);
+  --color-bg-hover: hsl(0 0 96);
+
+  /* Colors — border */
+  --color-border: hsl(0 0 88);
+  --color-border-light: hsl(0 0 94);
+  --color-border-input: hsl(0 0 80);
+
+  /* Colors — semantic */
+  --color-success: hsl(123 41 45);
+  --color-danger: hsl(1 77 55);
+  --color-danger-dark: hsl(0 73 41);
+  --color-warning: hsl(33 100 49);
+  --color-free-time: hsl(262 52 55);
+
+  /* Spacing */
+  --spacing-50: .25rem;
+  --spacing-100: .5rem;
+  --spacing-200: 1rem;
+
+  /* Timing */
+  --time-100: .2s;
+  --time-200: .5s;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

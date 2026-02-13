@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Time Tracker</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" />
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="popup.css">
+  <script src="shared.js" defer></script>
+  <script src="popup.js" defer></script>
+</head>
+
+<body>
+  <div class="header">
+    <h1>Time Tracker</h1>
+    <span class="badge" id="statusBadge">Allowed</span>
+    <button id="toggleViewBtn" title="Settings"></button>
+  </div>
+
+  <div class="free-time-banner" id="freeTime">
+    <span class="free-time-icon">&#9790;</span>
+    <h2>Free Time</h2>
+    <p>Entertainment limits are paused</p>
+  </div>
+
+  <section class="trackers">
+    <!-- Entertainment Card -->
+    <div class="card">
+      <h2 class="card-title-entertainment">Entertainment</h2>
+      <div class="card-row">
+        <span id="entertainmentUsed">0</span>
+        <span class="separator">/</span>
+        <span id="entertainmentLimit">10</span>
+      </div>
+      <div class="progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+        id="entertainmentTrack">
+        <div class="progress-fill entertainment-fill" id="entertainmentBar"></div>
+      </div>
+    </div>
+
+    <!-- Productivity Card -->
+    <div class="card">
+      <h2 class="card-title-productivity">Productivity</h2>
+      <div class="card-row">
+        <span id="productivityTotal">0</span>
+        <span class="separator">/</span>
+        <span id="productivityRequired">20</span>
+      </div>
+      <div class="progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+        id="productivityTrack">
+        <div class="progress-fill productivity-fill" id="productivityBar"></div>
+      </div>
+
+      <div class="card-row small" id="unlockText"></div>
+    </div>
+
+    <!-- Productivity Sites -->
+    <div class="card sites-card">
+      <h3 class="card-title"><label for="siteInput">Productivity Sites</label></h3>
+      <div class="sites-list" id="sitesList"></div>
+      <div class="add-row">
+        <input type="text" id="siteInput" placeholder="e.g. docs.google.com">
+        <button id="siteAdd">Add</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="settings hidden">
+    <h2>Settings</h2>
+    <div class="card time-setting">
+      <h3 class="card-title"><label for="limitInput">Entertainment Limit</label></h3>
+      <div class="limit-row">
+        <input type="number" id="limitInput" min="1" max="1440" value="10">
+        <span class="label">min per session</span>
+        <button id="limitSave">Save</button>
+      </div>
+    </div>
+
+    <div class="card time-setting">
+      <h3 class="card-title"><label for="prodLimitInput">Productivity Required</label></h3>
+      <div class="limit-row">
+        <input type="number" id="prodLimitInput" min="1" max="1440" value="20">
+        <span class="label">min to unblock</span>
+        <button id="prodLimitSave">Save</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title"><label for="freeTimeInput">Free Time</label></h3>
+      <div class="limit-row">
+        <input type="time" id="freeTimeInput" value="21:00">
+        <span class="save-feedback" id="freeTimeFeedback">Saved</span>
+      </div>
+    </div>
+  </section>
+</body>
+
+</html>
