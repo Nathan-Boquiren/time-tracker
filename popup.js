@@ -45,6 +45,7 @@ const freeTimeFeedback = document.getElementById("freeTimeFeedback");
 
 const settingsSection = document.querySelector(".settings");
 const toggleViewBtn = document.getElementById("toggleViewBtn");
+const darkModeToggle = document.getElementById("darkModeToggle");
 
 // ── View switching ──────────────────────────────────────────────────────────
 
@@ -82,6 +83,9 @@ async function render() {
     state: "ALLOWED",
     productivityMsSinceBlock: 0,
   };
+
+  applyTheme(config.darkMode);
+  darkModeToggle.checked = !!config.darkMode;
 
   const blocked = today.state === "BLOCKED";
   const limitMs = config.entertainmentLimitMinutes * 60_000;
@@ -212,6 +216,13 @@ freeTimeInput.addEventListener("change", async () => {
   config.freeTimeStartMinutes = minutes;
   await chrome.storage.local.set({ config });
   flashFeedback(freeTimeFeedback);
+});
+
+darkModeToggle.addEventListener("change", async () => {
+  const result = await chrome.storage.local.get("config");
+  const config = result.config || { ...DEFAULT_CONFIG };
+  config.darkMode = darkModeToggle.checked;
+  await chrome.storage.local.set({ config });
 });
 
 siteAdd.addEventListener("click", () => addSite());

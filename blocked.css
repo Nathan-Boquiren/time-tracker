@@ -86,3 +86,24 @@ h1 {
   color: var(--color-text-faint);
   margin-top: var(--spacing-100);
 }
+
+/* Dark mode overrides */
+body.dark-mode {
+  .container {
+    background: hsl(230 20% 14% / 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(230 15% 22% / 0.5);
+    box-shadow: 0 2px 12px hsl(0 0% 0% / 0.3);
+  }
+
+  h1 {
+    background: linear-gradient(135deg, var(--neon-start), var(--neon-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .progress-bar-fill {
+    background: linear-gradient(90deg, var(--neon-start), var(--color-success));
+  }
+}

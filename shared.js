@@ -2,6 +2,7 @@
 // Used by background.js, popup.js, and blocked-page.js
 
 const DEFAULT_CONFIG = {
+  darkMode: false,
   entertainmentLimitMinutes: 10,
   productivitySites: ["github.com", "stackoverflow.com", "leetcode.com"],
   freeTimeStartMinutes: 1260, // 21:00 (9 PM) = 21 * 60
@@ -20,6 +21,10 @@ function formatMs(ms) {
   const m = Math.floor(totalSec / 60);
   const s = totalSec % 60;
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+function applyTheme(darkMode) {
+  document.body.classList.toggle("dark-mode", !!darkMode);
 }
 
 function formatMsVerbose(ms) {

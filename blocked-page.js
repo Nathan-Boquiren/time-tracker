@@ -12,6 +12,8 @@ async function update() {
   const config = result.config || { ...DEFAULT_CONFIG };
   const today = result.today || {};
 
+  applyTheme(config.darkMode);
+
   if (isCurrentlyFreeTime(config)) {
     document.querySelector("h1").textContent = "Free Time!";
     document.querySelector("h1").style.color = "var(--color-free-time)";

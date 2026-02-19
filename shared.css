@@ -64,6 +64,34 @@
   --time-200: .5s;
 }
 
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode {
+  --color-text: hsl(220 15% 85%);
+  --color-text-secondary: hsl(220 10% 65%);
+  --color-text-muted: hsl(220 10% 55%);
+  --color-text-faint: hsl(220 8% 45%);
+  --color-white: hsl(230 25% 12%);
+  --color-bg: hsl(230 25% 9%);
+  --color-bg-hover: hsl(230 20% 15%);
+
+  --color-border: hsl(230 15% 20%);
+  --color-border-light: hsl(230 15% 18%);
+  --color-border-input: hsl(230 15% 28%);
+
+  --color-success: hsl(123 41% 52%);
+  --color-danger: hsl(1 77% 60%);
+  --color-danger-dark: hsl(0 73% 50%);
+  --color-warning: hsl(33 100% 55%);
+  --color-free-time: hsl(262 52% 62%);
+
+  --neon-start: hsl(270 70% 60%);
+  --neon-end: hsl(320 70% 60%);
+  --neon-glow: hsl(290 70% 55% / 0.3);
+}
+
 * {
   margin: 0;
   padding: 0;

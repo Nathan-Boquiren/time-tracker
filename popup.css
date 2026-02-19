@@ -156,6 +156,7 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 100vw;
   overflow: hidden;
   position: relative;
+  container-type: inline-size;
 
   --progress-width: 0%;
 
@@ -166,10 +167,14 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     width: var(--progress-width);
     border-radius: inherit;
+    background-size: 100cqi;
     transition: width 0.3s ease;
   }
 
-  &#entertainmentTrack::before { background: var(--color-warning) }
+  &#entertainmentTrack::before {
+    background: linear-gradient(to right in oklch, var(--color-warning), var(--color-danger));
+    
+  }
   &#entertainmentTrack.over::before { background: var(--color-danger) }
   &#productivityTrack::before { background: var(--color-success) }
 }
@@ -333,5 +338,103 @@ button {
 
   &:hover {
     background-color: var(--color-bg-hover);
+  }
+}
+
+/* Toggle switch component */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    inset: 0;
+    background: var(--color-border-input);
+    border-radius: 22px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      width: 16px;
+      height: 16px;
+      background: var(--color-white);
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+    }
+  }
+
+  input:checked + .slider {
+    background: linear-gradient(135deg, var(--neon-start), var(--neon-end));
+  }
+
+  input:checked + .slider::before {
+    transform: translateX(18px);
+  }
+
+  input:focus-visible + .slider {
+    outline: 2px solid var(--color-free-time);
+    outline-offset: 2px;
+  }
+}
+
+/* Dark mode overrides */
+body.dark-mode {
+  .card {
+    background: hsl(230 20% 14% / 0.6);
+    backdrop-filter: blur(12px);
+    border-color: hsl(230 15% 22% / 0.5);
+  }
+
+  .header h1 {
+    background: linear-gradient(135deg, var(--neon-start), var(--neon-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .badge {
+    box-shadow: 0 0 8px var(--neon-glow);
+  }
+
+  #entertainmentTrack::before {
+    background: linear-gradient(90deg, var(--neon-start), var(--neon-end));
+  }
+
+  #entertainmentTrack.over::before {
+    background: var(--color-danger);
+  }
+
+  #productivityTrack::before {
+    background: linear-gradient(90deg, var(--neon-start), var(--color-success));
+  }
+
+  .free-time-banner {
+    background: hsl(270 40% 20% / 0.4);
+    backdrop-filter: blur(12px);
+    border-color: hsl(270 40% 35% / 0.3);
+  }
+
+  input, button {
+    background-color: var(--color-white);
+    color: var(--color-text);
+    border-color: var(--color-border-input);
   }
 }
