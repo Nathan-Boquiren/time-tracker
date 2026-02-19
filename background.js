@@ -126,8 +126,6 @@ async function getData() {
 }
 
 async function saveData(data) {
-  // Only write today + tracking. Config is owned by the popup and only
-  // written by the background script during initialization (onInit).
   await chrome.storage.local.set({
     today: data.today,
     tracking: data.tracking,
@@ -151,7 +149,7 @@ function updateBadge(today, config) {
     const remainingMs = Math.max(0, limitMs - today.entertainmentMs);
     const remainingMin = Math.floor(remainingMs / 60_000);
     chrome.action.setBadgeText({ text: String(remainingMin) });
-    chrome.action.setBadgeBackgroundColor({ color: "#43a047" });
+    chrome.action.setBadgeBackgroundColor({ color: "#0ac282" });
   }
 }
 
@@ -178,7 +176,9 @@ async function reclassifyAllWindows(data) {
         if (tab?.url) {
           newMap[win.id] = classifyUrl(tab.url, data.config.productivitySites);
         }
-      } catch (e) { console.warn("reclassifyAllWindows: tab query failed for window", win.id, e); }
+      } catch (e) {
+        console.warn("reclassifyAllWindows: tab query failed for window", win.id, e);
+      }
     }
     data.tracking.windowCategories = newMap;
   } catch (e) {
@@ -209,7 +209,7 @@ async function reclassifyWindow(data, windowId) {
 async function cleanupMinimizedWindows(data) {
   try {
     const windows = await chrome.windows.getAll({ windowTypes: ["normal"] });
-    const openIds = new Set(windows.filter(w => w.state !== "minimized").map(w => w.id));
+    const openIds = new Set(windows.filter((w) => w.state !== "minimized").map((w) => w.id));
     for (const id of Object.keys(data.tracking.windowCategories)) {
       if (!openIds.has(Number(id))) {
         delete data.tracking.windowCategories[id];
@@ -316,7 +316,6 @@ async function onTick() {
   const data = await getData();
   const now = Date.now();
   const rawElapsed = now - data.tracking.lastTickTime;
-  // Discard stale tick after service worker restart (lastTickTime can be hours old)
   const elapsed = rawElapsed > MAX_ELAPSED_MS ? 0 : clampElapsed(rawElapsed);
   const freeTime = isCurrentlyFreeTime(data.config);
 

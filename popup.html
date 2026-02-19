@@ -33,10 +33,7 @@
         <span class="separator">/</span>
         <span id="entertainmentLimit">10</span>
       </div>
-      <div class="progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
-        id="entertainmentTrack">
-        <div class="progress-fill entertainment-fill" id="entertainmentBar"></div>
-      </div>
+      <div class="progress-bar" id="entertainmentBar"></div>
     </div>
 
     <!-- Productivity Card -->
@@ -47,11 +44,7 @@
         <span class="separator">/</span>
         <span id="productivityRequired">20</span>
       </div>
-      <div class="progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
-        id="productivityTrack">
-        <div class="progress-fill productivity-fill" id="productivityBar"></div>
-      </div>
-
+      <div class="progress-bar" id="productivityBar"></div>
       <div class="card-row small" id="unlockText"></div>
     </div>
 
@@ -59,49 +52,52 @@
     <div class="card sites-card">
       <h3 class="card-title"><label for="siteInput">Productivity Sites</label></h3>
       <div class="sites-list" id="sitesList"></div>
-      <div class="add-row">
+      <div class="setting-row">
         <input type="text" id="siteInput" placeholder="e.g. docs.google.com">
-        <button id="siteAdd">Add</button>
+        <button class="save-btn" id="siteAdd">Add</button>
       </div>
     </div>
   </section>
 
   <section class="settings hidden">
     <h2>Settings</h2>
+
     <div class="card time-setting">
-      <h3 class="card-title"><label for="limitInput">Entertainment Limit</label></h3>
-      <div class="limit-row">
+      <h3 class="card-title-entertainment"><label for="limitInput">Entertainment Limit</label></h3>
+      <div class="setting-row">
         <input type="number" id="limitInput" min="1" max="1440" value="10">
         <span class="label">min per session</span>
-        <button id="limitSave">Save</button>
+        <button class="save-btn" id="limitSave">Save</button>
       </div>
     </div>
 
     <div class="card time-setting">
-      <h3 class="card-title"><label for="prodLimitInput">Productivity Required</label></h3>
-      <div class="limit-row">
+      <h3 class="card-title-productivity"><label for="prodLimitInput">Productivity Required</label></h3>
+
+      <div class="setting-row">
         <input type="number" id="prodLimitInput" min="1" max="1440" value="20">
         <span class="label">min to unblock</span>
-        <button id="prodLimitSave">Save</button>
+        <button class="save-btn" id="prodLimitSave">Save</button>
       </div>
     </div>
 
-    <div class="card">
-      <h3 class="card-title"><label for="freeTimeInput">Free Time</label></h3>
-      <div class="limit-row">
+    <div class="card free-time-card">
+      <h3 class="card-title-free-time"><label for="freeTimeInput">Free Time</label></h3>
+
+      <div class="setting-row">
         <input type="time" id="freeTimeInput" value="21:00">
-        <span class="save-feedback" id="freeTimeFeedback">Saved</span>
+        <button class="save-btn" id="freeTimeSave">Save</button>
       </div>
+
     </div>
 
-    <div class="card">
-      <div class="toggle-row">
-        <span class="label">Dark Mode</span>
-        <label class="toggle-switch">
-          <input type="checkbox" id="darkModeToggle">
-          <span class="slider"></span>
-        </label>
-      </div>
+    <div class="card dark-mode-card">
+      <h3 class="card-title-color-mode">Dark Mode</h3>
+
+      <label class="toggle-switch" tabindex="0">
+        <input type="checkbox" id="darkModeToggle">
+        <span class="slider"></span>
+      </label>
     </div>
   </section>
 </body>

@@ -117,11 +117,11 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: var(--color-text-muted);
-  margin-bottom: 6px;
+  margin-bottom: var(--spacing-100);
 
   &[class$="-entertainment"] { color: var(--color-warning) }
   &[class$="-productivity"] { color: var(--color-success) }
+  &[class$="-free-time"] { color: var(--color-free-time) }
 }
 
 .card-row {
@@ -149,7 +149,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Progress bars */
-.progress-track {
+.progress-bar {
   width: 100%;
   height: var(--spacing-200);
   background: var(--color-border);
@@ -171,19 +171,20 @@ h1, h2, h3, h4, h5, h6 {
     transition: width 0.3s ease;
   }
 
-  &#entertainmentTrack::before {
-    background: linear-gradient(to right in oklch, var(--color-warning), var(--color-danger));
-    
+  &#entertainmentBar::before {
+    background-image: linear-gradient(to right in oklch, var(--color-warning), var(--color-danger));
   }
-  &#entertainmentTrack.over::before { background: var(--color-danger) }
-  &#productivityTrack::before { background: var(--color-success) }
+  &#productivityBar::before {
+    background-image: linear-gradient(to right in oklch, var(--color-success-light), var(--color-success-dark));
+  }
 }
 
 #unlockText:not(.show) { display: none }
 
 /* Focus-visible outlines for keyboard navigation */
 
-:is(#toggleViewBtn, button, input):focus-visible {
+:is(#toggleViewBtn, button, input,):focus-visible,
+input:focus-visible + .slider {
   outline: 2px solid var(--color-free-time);
   outline-offset: 2px;
 }
@@ -214,68 +215,6 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-.settings {
-  h2 {
-    margin-bottom: var(--spacing-200);
-    font-weight: 600;
-    font-size: var(--font-size-md);
-    color: var(--color-text-secondary);
-  }
-
-  /* Limit row */
-  .limit-row {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: var(--spacing-100);
-
-    input {
-      width: 60px;
-      padding: 4px 6px;
-      border: 1px solid var(--color-border-input);
-      font-size: var(--font-size-base);
-      text-align: center;
-
-      &[type="time"] { width: 7rem }
-    }
-
-    input, button {
-      border-radius: var(--spacing-100);
-    }
-
-    button {
-      margin-left: auto;
-      width: 3.25rem;
-      height: 1.6rem;
-      transition: var(--time-100) ease;
-
-      &.save-success {
-        background-color: var(--color-success);
-        border-color: var(--color-success);
-        color: var(--color-white);
-        
-      }
-    }
-  }
-}
-
-.save-feedback {
-  font-size: var(--font-size-xs);
-  font-weight: 500;
-  color: var(--color-success);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  &.visible { opacity: 1; }
-
-  &.just-added {
-    animation: highlight-fade 1.5s ease;
-  }
-}
-
-@keyframes highlight-fade {
-  0%   { background-color: hsla(123, 41%, 45%, 0.15); }
-  100% { background-color: transparent; }
-}
 
 /* Sites list */
 .sites-card {
@@ -289,15 +228,15 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 4px 0;
-    border-bottom: 1px solid var(--color-border-light);
+    padding: var(--spacing-50) var(--spacing-100);
+    border-radius: var(--spacing-50);
     font-size: var(--font-size-sm);
+    transition: background-color .1s ease;
 
-    &:last-child {
-      border-bottom: none;
-    }
+    &:not(:last-child) { border-bottom: 1px solid var(--color-border-light) }
+    &:hover {background-color: var(--color-bg-hover);}
 
-    button {
+    .remove-site-btn {
       background: none;
       border: none;
       color: var(--color-danger);
@@ -306,93 +245,115 @@ h1, h2, h3, h4, h5, h6 {
       padding: 0 4px;
       line-height: 1;
 
-      &:hover {
-        color: var(--color-danger-dark);
-      }
+      &:hover { color: var(--color-danger-dark) }
     }
   }
 
   /* Add row */
-  .add-row {
-    display: flex;
-    gap: var(--spacing-100);
+  .setting-row input { flex: 1 }
+}
 
-    input {
-      flex: 1;
-      padding: 4px 6px;
-      border: 1px solid var(--color-border-input);
-      border-radius: 4px;
-      font-size: var(--font-size-sm);
-    }
+/* Settings */
+
+.settings h2 {
+  font-weight: 600;
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-200);
+}
+
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--spacing-100);
+}
+
+input {
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--spacing-100);
+  font-size: var(--font-size-base);
+  padding-inline: var(--spacing-500);
+  cursor: pointer;
+  &:not(#siteInput) { text-align: center; }
+  
+  &[type="time"] {
+    width: 5.5rem;
+    font-family: inherit;
+
+    &::-webkit-calendar-picker-indicator { display: none }
+    &::-webkit-inner-spin-button { display: none }
+    &::-moz-clear { display: none }
   }
+}
+
+input, .save-btn {
+  width: 3.5rem;
+  height: 1.7rem;
 }
 
 /* Buttons */
-button {
-  padding: 4px 10px;
+
+.save-btn {
   border: 1px solid var(--color-border-input);
-  border-radius: 4px;
+  border-radius: var(--spacing-100);
   background-color: var(--color-white);
   font-size: var(--font-size-sm);
   cursor: pointer;
+  margin-left: auto;
+  transition: var(--time-100) ease;
 
-  &:hover {
-    background-color: var(--color-bg-hover);
+  &:hover { background-color: var(--color-bg-hover) }
+
+  &.save-success {
+    background-color: var(--color-success);
+    border-color: var(--color-success);
+    color: var(--color-white);
   }
 }
 
-/* Toggle switch component */
-.toggle-row {
+.dark-mode-card {
+  margin-top: 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  h3 { margin-bottom: 0 }
 }
 
 .toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 22px;
-
-  input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
+  input { opacity: 0; width: 0; height: 0; display: none; visibility: hidden; }
 
   .slider {
-    position: absolute;
-    inset: 0;
-    background: var(--color-border-input);
-    border-radius: 22px;
+    position: relative;
+    display: block;
+    width: 2.5rem;
+    aspect-ratio: 2 / 1;
+
+    background-color: var(--color-border-input);
+    border-radius: 100vmax;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: background-color 0.3s ease;
 
     &::before {
+      --gutter: 3px;
       content: "";
       position: absolute;
-      left: 3px;
-      top: 3px;
-      width: 16px;
-      height: 16px;
-      background: var(--color-white);
+      inset-block: var(--gutter);
+      left: var(--gutter);
+      aspect-ratio: 1;
       border-radius: 50%;
-      transition: transform 0.3s ease;
+      
+      background-color: var(--color-white);
+      transition: 0.3s ease;
     }
   }
 
   input:checked + .slider {
-    background: linear-gradient(135deg, var(--neon-start), var(--neon-end));
+    background: linear-gradient(135deg in oklch, var(--neon-start), var(--neon-end));
+    &::before { translate: calc(100% + calc(var(--gutter) * 2)) }
   }
 
-  input:checked + .slider::before {
-    transform: translateX(18px);
-  }
-
-  input:focus-visible + .slider {
-    outline: 2px solid var(--color-free-time);
-    outline-offset: 2px;
-  }
 }
 
 /* Dark mode overrides */
@@ -404,7 +365,7 @@ body.dark-mode {
   }
 
   .header h1 {
-    background: linear-gradient(135deg, var(--neon-start), var(--neon-end));
+    background: linear-gradient(135deg in oklch, var(--neon-start), var(--neon-end));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -412,18 +373,6 @@ body.dark-mode {
 
   .badge {
     box-shadow: 0 0 8px var(--neon-glow);
-  }
-
-  #entertainmentTrack::before {
-    background: linear-gradient(90deg, var(--neon-start), var(--neon-end));
-  }
-
-  #entertainmentTrack.over::before {
-    background: var(--color-danger);
-  }
-
-  #productivityTrack::before {
-    background: linear-gradient(90deg, var(--neon-start), var(--color-success));
   }
 
   .free-time-banner {

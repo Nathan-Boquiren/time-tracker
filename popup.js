@@ -21,27 +21,28 @@ const statusBadge = document.getElementById("statusBadge");
 
 const entertainmentUsed = document.getElementById("entertainmentUsed");
 const entertainmentLimit = document.getElementById("entertainmentLimit");
-const entertainmentTrack = document.getElementById("entertainmentTrack");
+const entertainmentBar = document.getElementById("entertainmentBar");
 
 const productivityTotal = document.getElementById("productivityTotal");
 const productivityRequired = document.getElementById("productivityRequired");
-const productivityTrack = document.getElementById("productivityTrack");
+const productivityBar = document.getElementById("productivityBar");
 
 const limitInput = document.getElementById("limitInput");
 const limitSave = document.getElementById("limitSave");
+
 const prodLimitInput = document.getElementById("prodLimitInput");
 const prodLimitSave = document.getElementById("prodLimitSave");
+
 const sitesList = document.getElementById("sitesList");
 const siteInput = document.getElementById("siteInput");
 const siteAdd = document.getElementById("siteAdd");
 
 const freeTimeInput = document.getElementById("freeTimeInput");
 const freeTimeMsg = document.getElementById("freeTime");
+const freeTimeSave = document.getElementById("freeTimeSave");
 
 const settingsBtn = document.getElementById("settingsBtn");
 const backBtn = document.getElementById("backBtn");
-
-const freeTimeFeedback = document.getElementById("freeTimeFeedback");
 
 const settingsSection = document.querySelector(".settings");
 const toggleViewBtn = document.getElementById("toggleViewBtn");
@@ -63,11 +64,6 @@ function flashButton(button, originalText) {
     button.textContent = originalText;
     button.classList.remove("save-success");
   }, 1500);
-}
-
-function flashFeedback(el) {
-  el.classList.add("visible");
-  setTimeout(() => el.classList.remove("visible"), 1500);
 }
 
 // ── Render ───────────────────────────────────────────────────────────────────
@@ -111,13 +107,10 @@ async function render() {
 // Rendering Helper Functions
 
 function renderEntertainmentCard(config, today, limitMs) {
+  const pct = limitMs > 0 ? Math.min(100, (today.entertainmentMs / limitMs) * 100) : 0;
+  entertainmentBar.style.setProperty("--progress-width", `${pct.toFixed(1)}%`);
   entertainmentUsed.textContent = formatMs(today.entertainmentMs);
   entertainmentLimit.textContent = `${String(config.entertainmentLimitMinutes).padStart(2, "0")}:00`;
-  const entPct = limitMs > 0 ? Math.min(100, (today.entertainmentMs / limitMs) * 100) : 0;
-
-  entertainmentTrack.style.setProperty("--progress-width", `${entPct.toFixed(1)}%`);
-  entertainmentTrack.setAttribute("aria-valuenow", Math.round(entPct));
-  entertainmentTrack.classList.toggle("over", today.entertainmentMs >= limitMs);
 }
 
 function renderProductivityCard(config, today, blocked) {
@@ -125,10 +118,9 @@ function renderProductivityCard(config, today, blocked) {
   const earnedMs = today.productivityMsSinceBlock || 0;
   const pct = prodCapMs > 0 ? Math.min(100, ((blocked ? earnedMs : today.productivityMs) / prodCapMs) * 100) : 0;
 
-  productivityTrack.style.setProperty("--progress-width", `${pct.toFixed(1)}%`);
-  productivityTrack.setAttribute("aria-valuenow", Math.round(pct));
-  productivityTotal.textContent = formatMs(blocked ? earnedMs : today.productivityMs);
+  productivityBar.style.setProperty("--progress-width", `${pct.toFixed(1)}%`);
   productivityRequired.textContent = formatMs(prodCapMs);
+  productivityTotal.textContent = formatMs(blocked ? earnedMs : today.productivityMs);
 
   // Productivity time left to unlock
   renderTimeLeftTxt(blocked, prodCapMs, earnedMs);
@@ -171,6 +163,7 @@ function renderSites(sites) {
     name.textContent = site;
 
     const removeBtn = document.createElement("button");
+    removeBtn.classList.add("remove-site-btn");
     removeBtn.textContent = "\u00d7";
     removeBtn.title = "Remove";
     removeBtn.addEventListener("click", () => removeSite(site));
@@ -209,13 +202,13 @@ prodLimitSave.addEventListener("click", async () => {
   flashButton(prodLimitSave, "Save");
 });
 
-freeTimeInput.addEventListener("change", async () => {
+freeTimeSave.addEventListener("click", async () => {
   const minutes = timeStringToMinutes(freeTimeInput.value);
   const result = await chrome.storage.local.get("config");
   const config = result.config || { ...DEFAULT_CONFIG };
   config.freeTimeStartMinutes = minutes;
   await chrome.storage.local.set({ config });
-  flashFeedback(freeTimeFeedback);
+  flashButton(freeTimeSave, "Save");
 });
 
 darkModeToggle.addEventListener("change", async () => {
