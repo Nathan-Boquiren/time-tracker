@@ -303,7 +303,7 @@ function accumulateTime(data, elapsed, freeTime) {
     if (data.today.productivityMs < prodCapMs) {
       data.today.productivityMs = Math.min(data.today.productivityMs + elapsed, prodCapMs);
     }
-    if ((entertainmentActive || data.today.state === "BLOCKED") && data.today.productivityMsSinceBlock < prodCapMs) {
+    if ((entertainmentActive || data.today.state === "BLOCKED" || data.today.entertainmentMs > 0) && data.today.productivityMsSinceBlock < prodCapMs) {
       data.today.productivityMsSinceBlock = Math.min(data.today.productivityMsSinceBlock + elapsed, prodCapMs);
     }
   }

@@ -116,14 +116,16 @@ function renderEntertainmentCard(config, today, limitMs) {
 function renderProductivityCard(config, today, blocked) {
   const prodCapMs = config.productivityRequiredMinutes * 60_000;
   const earnedMs = today.productivityMsSinceBlock || 0;
-  const pct = prodCapMs > 0 ? Math.min(100, ((blocked ? earnedMs : today.productivityMs) / prodCapMs) * 100) : 0;
+  const preEarning = today.entertainmentMs > 0;
+  const showEarned = blocked || preEarning;
+  const pct = prodCapMs > 0 ? Math.min(100, ((showEarned ? earnedMs : today.productivityMs) / prodCapMs) * 100) : 0;
 
   productivityBar.style.setProperty("--progress-width", `${pct.toFixed(1)}%`);
   productivityRequired.textContent = formatMs(prodCapMs);
-  productivityTotal.textContent = formatMs(blocked ? earnedMs : today.productivityMs);
+  productivityTotal.textContent = formatMs(showEarned ? earnedMs : today.productivityMs);
 
   // Productivity time left to unlock
-  renderTimeLeftTxt(blocked, prodCapMs, earnedMs);
+  renderTimeLeftTxt(showEarned, prodCapMs, earnedMs);
 }
 
 function renderStatusBadge(isBlocked, isFreeTime) {
@@ -132,13 +134,11 @@ function renderStatusBadge(isBlocked, isFreeTime) {
   statusBadge.textContent = isFreeTime ? "Free Time" : isBlocked ? "Blocked" : "Allowed";
 }
 
-function renderTimeLeftTxt(blocked, prodCapMs, earnedMs) {
-  if (!blocked) return;
-
+function renderTimeLeftTxt(showEarned, prodCapMs, earnedMs) {
   const unlockText = document.getElementById("unlockText");
   const remainingMs = Math.max(0, prodCapMs - earnedMs);
   unlockText.textContent = `(${formatMs(remainingMs)} left)`;
-  unlockText.classList.toggle("show", blocked);
+  unlockText.classList.toggle("show", showEarned);
 }
 
 function renderSettings(config) {

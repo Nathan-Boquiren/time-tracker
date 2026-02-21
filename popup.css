@@ -7,9 +7,6 @@ body {
   font-size: var(--font-size-base);
   color: var(--color-text);
   background: var(--color-bg);
-  padding: var(--spacing-200);
-  display: flex;
-  flex-direction: column;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -22,7 +19,9 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   justify-content: flex-end;
   gap: var(--spacing-200);
-  margin-bottom: var(--spacing-200);
+  padding: var(--spacing-200);
+  /* padding-bottom: 0; */
+  
 
   h1 {
     font-size: var(--font-size-lg);
@@ -108,8 +107,8 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--color-white);
   border: 1px solid var(--color-border);
   border-radius: var(--spacing-100);
-  padding: 12px;
-  margin-bottom: var(--spacing-200);
+  padding: .75rem;
+  &:not(:last-of-type) { margin-bottom: var(--spacing-200)  }
 }
 
 [class^="card-title"] {
@@ -122,6 +121,9 @@ h1, h2, h3, h4, h5, h6 {
   &[class$="-entertainment"] { color: var(--color-warning) }
   &[class$="-productivity"] { color: var(--color-success) }
   &[class$="-free-time"] { color: var(--color-free-time) }
+
+  body.dark-mode &[class$="-free-time"] { color: hsl(from var(--color-free-time) h calc(s + 20) calc(l + 8)) }
+
 }
 
 .card-row {
@@ -154,28 +156,47 @@ h1, h2, h3, h4, h5, h6 {
   height: var(--spacing-200);
   background: var(--color-border);
   border-radius: 100vw;
-  overflow: hidden;
   position: relative;
+  isolation: isolate;
   container-type: inline-size;
 
   --progress-width: 0%;
 
-  &::before {
+  &#entertainmentBar {
+    --gradient-start: var(--color-warning);
+    --gradient-end: var(--color-danger);
+  }
+
+  &#productivityBar {
+    --gradient-start: var(--color-success-light);
+    --gradient-end: var(--color-success-dark);
+  }
+
+  &::before, &::after {
     content: '';
     position: absolute;
+    border-radius: inherit;
+    background-size: 100cqi;
+  }
+
+  &::before {
     inset-block: 0;
     left: 0;
     width: var(--progress-width);
-    border-radius: inherit;
-    background-size: 100cqi;
     transition: width 0.3s ease;
+    background-image: linear-gradient(to right in oklch, var(--gradient-start), var(--gradient-end));
   }
 
-  &#entertainmentBar::before {
-    background-image: linear-gradient(to right in oklch, var(--color-warning), var(--color-danger));
-  }
-  &#productivityBar::before {
-    background-image: linear-gradient(to right in oklch, var(--color-success-light), var(--color-success-dark));
+  body.dark-mode &::after {
+    inset: -1px;
+    z-index: -1;
+    background-image: linear-gradient(
+      to right in oklch,
+      hsl(from var(--color-warning) h s l / .3),
+      hsl(from var(--color-danger) h s l / .3)
+    );
+    filter: blur(.5rem);
+    
   }
 }
 
@@ -195,6 +216,8 @@ input:focus-visible + .slider {
   interpolate-size: allow-keywords;
   overflow: hidden;
   height: auto;
+  padding: var(--spacing-200);
+
 
   @starting-style {
     opacity: 0;
@@ -214,7 +237,6 @@ input:focus-visible + .slider {
     display: none;
   }
 }
-
 
 /* Sites list */
 .sites-card {
@@ -250,7 +272,10 @@ input:focus-visible + .slider {
   }
 
   /* Add row */
-  .setting-row input { flex: 1 }
+  .setting-row input {
+    flex: 1;
+    padding-left: var(--spacing-100);
+  }
 }
 
 /* Settings */
@@ -261,7 +286,6 @@ input:focus-visible + .slider {
   color: var(--color-text-secondary);
   margin-bottom: var(--spacing-200);
 }
-
 
 .setting-row {
   display: flex;
@@ -275,8 +299,10 @@ input {
   border-radius: var(--spacing-100);
   font-size: var(--font-size-base);
   padding-inline: var(--spacing-500);
-  cursor: pointer;
-  &:not(#siteInput) { text-align: center; }
+  &:not([type="text"]) {
+    text-align: center;
+    cursor: pointer;
+  }
   
   &[type="time"] {
     width: 5.5rem;
@@ -359,9 +385,9 @@ input, .save-btn {
 /* Dark mode overrides */
 body.dark-mode {
   .card {
-    background: hsl(230 20% 14% / 0.6);
-    backdrop-filter: blur(12px);
-    border-color: hsl(230 15% 22% / 0.5);
+    background: var(--color-bg-lighter);
+    border: none;
+    box-shadow: 3px 3px 5px -1px hsl(0 0 0 / .15);
   }
 
   .header h1 {
@@ -369,10 +395,6 @@ body.dark-mode {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-  }
-
-  .badge {
-    box-shadow: 0 0 8px var(--neon-glow);
   }
 
   .free-time-banner {
