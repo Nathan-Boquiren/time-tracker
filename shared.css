@@ -88,8 +88,20 @@ body.dark-mode {
   --color-danger-dark: hsl(0 73 50);
   --color-free-time: hsl(275 70 65);
 
-  --neon-start: hsl(145 89 60);
-  --neon-end: hsl(168 75 46);
+  --accent-gradient-start: var(--color-success-light);
+  --accent-gradient-end: var(--color-success-dark);
+
+  &:has(.badge.blocked) {
+    --accent-gradient-start: var(--color-warning);
+    --accent-gradient-end: var(--color-danger);
+  }
+
+  &:has(.badge.free-time) {
+    --accent-gradient-start: hsl(290 90 65);
+    --accent-gradient-end: hsl(275 100 65);
+  }
+
+  
 }
 
 * {
