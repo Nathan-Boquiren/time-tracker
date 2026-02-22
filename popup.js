@@ -57,13 +57,9 @@ toggleViewBtn.addEventListener("click", () => {
 
 // ── Save feedback ───────────────────────────────────────────────────────────
 
-function flashButton(button, originalText) {
-  button.textContent = "\u2713";
+function flashButton(button) {
   button.classList.add("save-success");
-  setTimeout(() => {
-    button.textContent = originalText;
-    button.classList.remove("save-success");
-  }, 1500);
+  setTimeout(() => button.classList.remove("save-success"), 1000);
 }
 
 // ── Render ───────────────────────────────────────────────────────────────────
@@ -188,7 +184,7 @@ limitSave.addEventListener("click", async () => {
   const config = result.config || { ...DEFAULT_CONFIG };
   config.entertainmentLimitMinutes = Math.min(val, 1440);
   await chrome.storage.local.set({ config });
-  flashButton(limitSave, "Save");
+  flashButton(limitSave);
 });
 
 prodLimitSave.addEventListener("click", async () => {
@@ -199,7 +195,7 @@ prodLimitSave.addEventListener("click", async () => {
   const config = result.config || { ...DEFAULT_CONFIG };
   config.productivityRequiredMinutes = Math.min(val, 1440);
   await chrome.storage.local.set({ config });
-  flashButton(prodLimitSave, "Save");
+  flashButton(prodLimitSave);
 });
 
 freeTimeSave.addEventListener("click", async () => {
@@ -208,7 +204,7 @@ freeTimeSave.addEventListener("click", async () => {
   const config = result.config || { ...DEFAULT_CONFIG };
   config.freeTimeStartMinutes = minutes;
   await chrome.storage.local.set({ config });
-  flashButton(freeTimeSave, "Save");
+  flashButton(freeTimeSave);
 });
 
 darkModeToggle.addEventListener("change", async () => {

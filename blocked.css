@@ -2,8 +2,8 @@
 
 body {
   font-family: var(--font-family);
-  background: var(--color-bg);
-  color: var(--color-text);
+  background: var(--clr-bg-100);
+  color: var(--clr-text);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,43 +14,45 @@ body {
   text-align: center;
   max-width: 480px;
   padding: 48px 32px;
-  background: var(--color-white);
+  background: var(--clr-bg-200);
   border-radius: 12px;
   box-shadow: 0 2px 12px hsl(0 0 0 / 0.08);
 }
 
 .icon {
-  font-size: 64px;
+  font-size: 3rem;
   margin-bottom: var(--spacing-200);
 }
 
 h1 {
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--color-danger);
+  font-size: 1.5rem;
+  font-family: var(--poppins);
   margin-bottom: var(--spacing-100);
+  background: linear-gradient(135deg, var(--clr-warning), var(--clr-danger));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-
 .subtitle {
-  font-size: 15px;
-  color: var(--color-text-secondary);
-  margin-bottom: 32px;
+  font-size: var(--font-size-base);
+  color: var(--clr-text-secondary);
+  margin-bottom: 2rem;
 }
 
 .progress-section {
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
 }
 
 .progress-section > p:first-child {
   font-size: 14px;
-  color: var(--color-text-muted);
-  margin-bottom: 12px;
+  color: var(--clr-text-muted);
+  margin-bottom: var(--spacing-200);
 }
 
 .progress-bar-track {
   width: 100%;
   height: 12px;
-  background: var(--color-border);
+  background: var(--clr-border);
   border-radius: 6px;
   overflow: hidden;
   margin-bottom: var(--spacing-100);
@@ -58,7 +60,7 @@ h1 {
 
 .progress-bar-fill {
   height: 100%;
-  background: var(--color-success);
+  background: var(--clr-success);
   border-radius: 6px;
   width: 0%;
   transition: width 0.4s ease;
@@ -66,7 +68,7 @@ h1 {
 
 .progress-text {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: var(--clr-text-secondary);
 }
 
 .progress-details {
@@ -74,36 +76,24 @@ h1 {
   justify-content: center;
   gap: var(--spacing-200);
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: var(--clr-text-secondary);
 }
 
 .progress-stat strong {
-  color: var(--color-text);
+  color: var(--clr-text);
 }
 
 .hint {
   font-size: var(--font-size-xs);
-  color: var(--color-text-faint);
+  color: var(--clr-text-faint);
   margin-top: var(--spacing-100);
 }
 
 /* Dark mode overrides */
 body.dark-mode {
-  .container {
-    background: hsl(230 20% 14% / 0.6);
-    backdrop-filter: blur(12px);
-    border: 1px solid hsl(230 15% 22% / 0.5);
-    box-shadow: 0 2px 12px hsl(0 0% 0% / 0.3);
-  }
 
-  h1 {
-    background: linear-gradient(135deg, var(--neon-start), var(--neon-end));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
 
   .progress-bar-fill {
-    background: linear-gradient(90deg, var(--neon-start), var(--color-success));
+    background: linear-gradient(to right in oklch, var(--clr-success-light), var(--clr-success-dark));
   }
 }

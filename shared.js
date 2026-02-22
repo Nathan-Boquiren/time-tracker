@@ -13,7 +13,7 @@ function isCurrentlyFreeTime(config) {
   const startMinutes = config.freeTimeStartMinutes;
   if (startMinutes == null || startMinutes >= 1440) return false;
   const now = new Date();
-  return (now.getHours() * 60 + now.getMinutes()) >= startMinutes;
+  return now.getHours() * 60 + now.getMinutes() >= startMinutes;
 }
 
 function formatMs(ms) {

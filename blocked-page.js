@@ -27,7 +27,6 @@ async function update() {
   if (today.state !== "BLOCKED") {
     document.querySelector(".subtitle").textContent = "Entertainment is now unlocked!";
     progressBar.style.width = "100%";
-    progressTrack.setAttribute("aria-valuenow", "100");
     progressText.textContent = "Unlocked!";
     return;
   }
@@ -38,7 +37,6 @@ async function update() {
   const pct = requiredMs > 0 ? Math.min(100, (earnedMs / requiredMs) * 100) : 0;
 
   progressBar.style.width = pct.toFixed(1) + "%";
-  progressTrack.setAttribute("aria-valuenow", Math.round(pct));
 
   // Update structured progress details
   earnedText.textContent = formatMsVerbose(earnedMs);
