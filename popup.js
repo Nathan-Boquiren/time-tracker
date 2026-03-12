@@ -19,13 +19,8 @@ function timeStringToMinutes(timeStr) {
 
 const statusBadge = document.getElementById("statusBadge");
 
-const entertainmentUsed = document.getElementById("entertainmentUsed");
 const entertainmentLimit = document.getElementById("entertainmentLimit");
-const entertainmentBar = document.getElementById("entertainmentBar");
-
-const productivityTotal = document.getElementById("productivityTotal");
 const productivityRequired = document.getElementById("productivityRequired");
-const productivityBar = document.getElementById("productivityBar");
 
 const limitInput = document.getElementById("limitInput");
 const limitSave = document.getElementById("limitSave");
@@ -48,12 +43,79 @@ const settingsSection = document.querySelector(".settings");
 const toggleViewBtn = document.getElementById("toggleViewBtn");
 const darkModeToggle = document.getElementById("darkModeToggle");
 
+const strictModeBanner = document.getElementById("strictModeBanner");
+const strictModeCountdown = document.getElementById("strictModeCountdown");
+const strictDurationInput = document.getElementById("strictDurationInput");
+const strictModeToggle = document.getElementById("strictModeToggle");
+const strictModeModal = document.getElementById("strictModeModal");
+const strictModeConfirm = document.getElementById("strictModeConfirm");
+const strictModeCancel = document.getElementById("strictModeCancel");
+const modalDuration = document.getElementById("modalDuration");
+
+let strictCountdownInterval = null;
+
 // ── View switching ──────────────────────────────────────────────────────────
 
 toggleViewBtn.addEventListener("click", () => {
   settingsSection.classList.toggle("hidden");
   toggleViewBtn.title = toggleViewBtn.title === "Settings" ? "Back" : "Settings";
 });
+
+// ── Strict Mode ─────────────────────────────────────────────────────────────
+
+strictModeToggle.addEventListener("click", () => {
+  strictModeModal.showModal();
+});
+
+strictModeToggle.addEventListener("change", () => {
+  if (!strictModeToggle.checked) return;
+
+  // if (strictModeToggle.checked) {
+  const minutes = parseInt(strictDurationInput.value, 10);
+  if (!minutes || minutes < 1) {
+    strictModeToggle.checked = false;
+    return;
+  }
+  modalDuration.textContent = `${minutes} minute${minutes === 1 ? "" : "s"}`;
+  strictModeModal.classList.add("show");
+  strictModeToggle.checked = false; // don't check until confirmed
+  // }
+});
+
+strictModeConfirm.addEventListener("click", async () => {
+  const minutes = parseInt(strictDurationInput.value, 10);
+  if (!minutes || minutes < 1) return;
+  const result = await chrome.storage.local.get("config");
+  const config = result.config || { ...DEFAULT_CONFIG };
+  config.strictModeEndTime = Date.now() + minutes * 60_000;
+  await chrome.storage.local.set({ config });
+  strictModeModal.close();
+});
+
+strictModeCancel.addEventListener("click", () => strictModeModal.close());
+
+strictModeModal.addEventListener("click", (e) => {
+  if (e.target === strictModeModal) strictModeModal.classList.remove("show");
+});
+
+function updateStrictCountdown(endTime) {
+  const remaining = Math.max(0, endTime - Date.now());
+  if (remaining <= 0) {
+    clearInterval(strictCountdownInterval);
+    strictCountdownInterval = null;
+    render();
+    return;
+  }
+  const totalSec = Math.ceil(remaining / 1000);
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  const timeStr =
+    h > 0
+      ? `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`
+      : `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  strictModeCountdown.textContent = `Settings locked for ${timeStr}`;
+}
 
 // ── Save feedback ───────────────────────────────────────────────────────────
 
@@ -82,6 +144,13 @@ async function render() {
   const blocked = today.state === "BLOCKED";
   const limitMs = config.entertainmentLimitMinutes * 60_000;
   const freeTime = isCurrentlyFreeTime(config);
+  const strictActive = isStrictModeActive(config);
+
+  // Clean up expired strict mode timestamp
+  if (config.strictModeEndTime != null && !strictActive) {
+    config.strictModeEndTime = null;
+    chrome.storage.local.set({ config });
+  }
 
   // Status badge
   renderStatusBadge(blocked, freeTime);
@@ -89,7 +158,21 @@ async function render() {
   // Free time banner
   freeTimeMsg.classList.toggle("show", freeTime);
 
-  renderSettings(config);
+  // Strict mode banner
+  strictModeBanner.classList.toggle("show", strictActive);
+
+  // Strict mode countdown
+  clearInterval(strictCountdownInterval);
+  strictCountdownInterval = null;
+  if (strictActive) {
+    updateStrictCountdown(config.strictModeEndTime);
+    strictCountdownInterval = setInterval(() => updateStrictCountdown(config.strictModeEndTime), 1000);
+  }
+
+  // Lock/unlock settings
+  settingsSection.classList.toggle("locked", strictActive);
+
+  renderSettings(config, strictActive);
 
   if (freeTime) return;
 
@@ -104,6 +187,10 @@ async function render() {
 
 function renderEntertainmentCard(config, today, limitMs) {
   const pct = limitMs > 0 ? Math.min(100, (today.entertainmentMs / limitMs) * 100) : 0;
+
+  const entertainmentBar = document.getElementById("entertainmentBar");
+  const entertainmentUsed = document.getElementById("entertainmentUsed");
+
   entertainmentBar.style.setProperty("--progress-width", `${pct.toFixed(1)}%`);
   entertainmentUsed.textContent = formatMs(today.entertainmentMs);
   entertainmentLimit.textContent = `${String(config.entertainmentLimitMinutes).padStart(2, "0")}:00`;
@@ -115,6 +202,9 @@ function renderProductivityCard(config, today, blocked) {
   const preEarning = today.entertainmentMs > 0;
   const showEarned = blocked || preEarning;
   const pct = prodCapMs > 0 ? Math.min(100, ((showEarned ? earnedMs : today.productivityMs) / prodCapMs) * 100) : 0;
+
+  const productivityBar = document.getElementById("productivityBar");
+  const productivityTotal = document.getElementById("productivityTotal");
 
   productivityBar.style.setProperty("--progress-width", `${pct.toFixed(1)}%`);
   productivityRequired.textContent = formatMs(prodCapMs);
@@ -137,7 +227,7 @@ function renderTimeLeftTxt(showEarned, prodCapMs, earnedMs) {
   unlockText.classList.toggle("show", showEarned);
 }
 
-function renderSettings(config) {
+function renderSettings(config, strictActive) {
   // Limit input
   limitInput.value = config.entertainmentLimitMinutes;
   prodLimitInput.value = config.productivityRequiredMinutes;
@@ -146,10 +236,26 @@ function renderSettings(config) {
   freeTimeInput.value = minutesToTimeString(config.freeTimeStartMinutes != null ? config.freeTimeStartMinutes : 1260);
 
   // Sites list
-  renderSites(config.productivitySites || []);
+  renderSites(config.productivitySites || [], strictActive);
+
+  // Strict mode controls
+  strictModeToggle.checked = strictActive;
+  strictModeToggle.disabled = strictActive;
+  strictDurationInput.disabled = strictActive;
+
+  // Disable other inputs when locked
+  limitInput.disabled = strictActive;
+  limitSave.disabled = strictActive;
+  prodLimitInput.disabled = strictActive;
+  prodLimitSave.disabled = strictActive;
+  freeTimeInput.disabled = strictActive;
+  freeTimeSave.disabled = strictActive;
+  darkModeToggle.disabled = strictActive;
+  siteInput.disabled = strictActive;
+  siteAdd.disabled = strictActive;
 }
 
-function renderSites(sites) {
+function renderSites(sites, strictActive) {
   sitesList.innerHTML = "";
   for (const site of sites) {
     const item = document.createElement("div");
@@ -162,6 +268,7 @@ function renderSites(sites) {
     removeBtn.classList.add("remove-site-btn");
     removeBtn.textContent = "\u00d7";
     removeBtn.title = "Remove";
+    removeBtn.disabled = strictActive;
     removeBtn.addEventListener("click", () => removeSite(site));
 
     item.appendChild(name);
@@ -182,6 +289,7 @@ limitSave.addEventListener("click", async () => {
 
   const result = await chrome.storage.local.get("config");
   const config = result.config || { ...DEFAULT_CONFIG };
+  if (isStrictModeActive(config)) return;
   config.entertainmentLimitMinutes = Math.min(val, 1440);
   await chrome.storage.local.set({ config });
   flashButton(limitSave);
@@ -193,6 +301,7 @@ prodLimitSave.addEventListener("click", async () => {
 
   const result = await chrome.storage.local.get("config");
   const config = result.config || { ...DEFAULT_CONFIG };
+  if (isStrictModeActive(config)) return;
   config.productivityRequiredMinutes = Math.min(val, 1440);
   await chrome.storage.local.set({ config });
   flashButton(prodLimitSave);
@@ -202,6 +311,7 @@ freeTimeSave.addEventListener("click", async () => {
   const minutes = timeStringToMinutes(freeTimeInput.value);
   const result = await chrome.storage.local.get("config");
   const config = result.config || { ...DEFAULT_CONFIG };
+  if (isStrictModeActive(config)) return;
   config.freeTimeStartMinutes = minutes;
   await chrome.storage.local.set({ config });
   flashButton(freeTimeSave);
@@ -210,6 +320,7 @@ freeTimeSave.addEventListener("click", async () => {
 darkModeToggle.addEventListener("change", async () => {
   const result = await chrome.storage.local.get("config");
   const config = result.config || { ...DEFAULT_CONFIG };
+  if (isStrictModeActive(config)) return;
   config.darkMode = darkModeToggle.checked;
   await chrome.storage.local.set({ config });
 });
@@ -231,6 +342,7 @@ async function addSite() {
 
   const result = await chrome.storage.local.get("config");
   const config = result.config || { ...DEFAULT_CONFIG };
+  if (isStrictModeActive(config)) return;
   if (!config.productivitySites.includes(domain)) {
     config.productivitySites.push(domain);
     justAddedSite = domain;
@@ -242,6 +354,7 @@ async function addSite() {
 async function removeSite(domain) {
   const result = await chrome.storage.local.get("config");
   const config = result.config || { ...DEFAULT_CONFIG };
+  if (isStrictModeActive(config)) return;
   config.productivitySites = config.productivitySites.filter((s) => s !== domain);
   await chrome.storage.local.set({ config });
 }

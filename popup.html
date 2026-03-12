@@ -19,9 +19,15 @@
   </div>
 
   <div class="free-time-banner" id="freeTime">
-    <span class="free-time-icon">&#9790;</span>
+    <span class="icon">&#9790;</span>
     <h2>Free Time</h2>
     <p>Entertainment limits are paused</p>
+  </div>
+
+  <div class="strict-mode-banner" id="strictModeBanner">
+    <span class="icon">&#128274;</span>
+    <h2>Strict Mode</h2>
+    <p id="strictModeCountdown">Settings locked for --:--</p>
   </div>
 
   <section class="trackers">
@@ -99,7 +105,32 @@
         <span class="slider"></span>
       </label>
     </div>
+
+    <div class="card strict-mode-card">
+      <h3 class="card-title-strict"><label for="strictDurationInput">Strict Mode</label></h3>
+      <div class="setting-row">
+        <input type="number" id="strictDurationInput" min="1" max="1440" value="60">
+        <span class="label">minutes</span>
+      </div>
+      <label class="toggle-switch" tabindex="0">
+        <input type="checkbox" id="strictModeToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
   </section>
+
+  <dialog class="modal" id="strictModeModal">
+    <!-- <div class="modal-card"> -->
+    <h2>Are you sure?</h2>
+    <p>Settings will be locked for <strong id="modalDuration">60 minutes</strong>.</p>
+    <p class="modal-subtitle">You won't be able to change settings until the timer expires.</p>
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-cancel" id="strictModeCancel">Cancel</button>
+      <button class="modal-btn modal-btn-confirm" id="strictModeConfirm">Continue</button>
+    </div>
+    <!-- </div> -->
+  </dialog>
+
 </body>
 
 </html>

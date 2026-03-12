@@ -7,7 +7,12 @@ const DEFAULT_CONFIG = {
   productivitySites: ["github.com", "stackoverflow.com", "leetcode.com"],
   freeTimeStartMinutes: 1260, // 21:00 (9 PM) = 21 * 60
   productivityRequiredMinutes: 20,
+  strictModeEndTime: null,
 };
+
+function isStrictModeActive(config) {
+  return config.strictModeEndTime != null && Date.now() < config.strictModeEndTime;
+}
 
 function isCurrentlyFreeTime(config) {
   const startMinutes = config.freeTimeStartMinutes;

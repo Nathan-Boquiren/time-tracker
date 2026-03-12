@@ -56,6 +56,9 @@
   --clr-danger-dark: hsl(0 73 41);
   --clr-warning: hsl(33 100 49);
   --clr-free-time: hsl(262 52 55);
+  --clr-strict: hsl(210 45% 50%);
+  --clr-strict-light: hsl(210 50% 60%);
+  --clr-strict-dark: hsl(210 40% 40%);
 
   /* Spacing */
   --spacing-50: .25rem;
@@ -64,7 +67,7 @@
 
   /* Timing */
   --time-100: .2s;
-  --time-200: .5s;
+  --time-200: .4s;
 }
 
 body {
@@ -89,6 +92,9 @@ body.dark-mode {
   --clr-success: hsl(145 89 60);
   --clr-danger-dark: hsl(0 73 50);
   --clr-free-time: hsl(275 70 65);
+  --clr-strict: hsl(210 50% 60%);
+  --clr-strict-light: hsl(210 55% 70%);
+  --clr-strict-dark: hsl(210 45% 50%);
 
   --accent-gradient-start: var(--clr-success-light);
   --accent-gradient-end: var(--clr-success-dark);
@@ -101,9 +107,7 @@ body.dark-mode {
   &:has(.badge.free-time) {
     --accent-gradient-start: hsl(290 90 65);
     --accent-gradient-end: hsl(275 100 65);
-  }
-
-  
+  } 
 }
 
 * {

@@ -20,3 +20,39 @@ style.textContent = `
   }
 `;
 document.head.appendChild(style);
+
+// Title override for Shorts pages
+let titleObserver = null;
+
+function setShortsTitle() {
+  if (document.title !== "YT Shorts") {
+    document.title = "YT Shorts";
+  }
+}
+
+function startTitleOverride() {
+  setShortsTitle();
+  if (titleObserver) return;
+  const titleEl = document.querySelector("title");
+  if (!titleEl) return;
+  titleObserver = new MutationObserver(setShortsTitle);
+  titleObserver.observe(titleEl, { childList: true });
+}
+
+function stopTitleOverride() {
+  if (titleObserver) {
+    titleObserver.disconnect();
+    titleObserver = null;
+  }
+}
+
+function handleNavigation() {
+  if (location.pathname.startsWith("/shorts/")) {
+    startTitleOverride();
+  } else {
+    stopTitleOverride();
+  }
+}
+
+document.addEventListener("yt-navigate-finish", handleNavigation);
+handleNavigation();
